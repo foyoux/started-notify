@@ -17,4 +17,14 @@ github repository started notify 💕
 
 ## 获取邮箱授权码
 
-![image-20211122222358612](images/image-20211122222358612.png)
+<p align="center">
+  <img src="http://110.42.175.98:5512/down/LKPvT9xK2lFx?fname=/started-notify/image-20211122222358612.png" alt="获取邮箱授权码"/>
+</p>
+
+
+
+## 效果预览
+
+<p align="center">
+  <img src="http://110.42.175.98:5512/down/LKPvT9xK2lFx?fname=/started-notify/started-notify-preview.png" alt="获取邮箱授权码"/>
+</p>
