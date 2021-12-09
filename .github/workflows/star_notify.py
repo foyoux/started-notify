@@ -1,4 +1,4 @@
-"""..."""
+"""started notify"""
 import os
 import sys
 
@@ -6,7 +6,7 @@ import requests
 import yagmail
 
 if __name__ == '__main__':
-    token = sys.argv[4]
+    token = sys.argv[1]
     user, repo = os.getenv('GITHUB_REPOSITORY').split('/')
     data = requests.post(
         'https://api.github.com/graphql',
@@ -17,8 +17,9 @@ if __name__ == '__main__':
         }
     ).json()['data']
     last_user = data['repository']['stargazers']['edges'][0]['node']
-    yag = yagmail.SMTP(sys.argv[1], sys.argv[2], 'smtp.qq.com', 465)
-    yag.send(sys.argv[3], f'[{user}/{repo}] Started', f"""
+    yag = yagmail.SMTP('started_notify@163.com', 'QDCONGQTZIIZKBBI', 'smtp.163.com', 465)
+    notify_email = sys.argv[2]
+    yag.send(notify_email, f'[{user}/{repo}] Started', f"""
         <div style="text-align: center;">
             <h1>{data['repository']['stargazerCount']} 💕</h1>
             <img src="{last_user['avatarUrl']}" alt="avatar" style="width:200px; border-radius: 100px">
