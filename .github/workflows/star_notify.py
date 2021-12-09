@@ -17,7 +17,7 @@ if __name__ == '__main__':
         }
     ).json()['data']
     last_user = data['repository']['stargazers']['edges'][0]['node']
-    yag = yagmail.SMTP('started_notify@163.com', 'QDCONGQTZIIZKBBI', 'smtp.163.com', 465)
+    yag = yagmail.SMTP({'started_notify@163.com': 'started notify'}, 'QDCONGQTZIIZKBBI', 'smtp.163.com', 465)
     notify_email = sys.argv[2]
     yag.send(notify_email, f'[{user}/{repo}] Started', f"""
         <div style="text-align: center;">
