@@ -11,7 +11,8 @@ if __name__ == '__main__':
     data = requests.post(
         'https://api.github.com/graphql',
         json={
-            'query': '{ repository(name: "' + repo + '", owner: "' + user + '") { stargazerCount stargazers(last: 1) { edges { node { name url avatarUrl email } } } } }'},
+            'query': '{ repository(name: "' + repo + '", owner: "' + user +
+                     '") { stargazerCount stargazers(last: 1) { edges { node { name url avatarUrl email } } } } }'},
         headers={
             'Authorization': 'Bearer ' + token,
         }
