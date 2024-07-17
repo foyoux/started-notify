@@ -15,5 +15,5 @@ GitHub repository started notify 💕
 ## 效果预览
 
 <p align="center">
-  <img src="http://110.42.175.98:5512/down/LKPvT9xK2lFx?fname=/started-notify/started-notify-preview.png" alt="获取邮箱授权码"/>
+  <img src="images/started-notify-preview.png" width="400" alt="获取邮箱授权码"/>
 </p>
