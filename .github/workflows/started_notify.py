@@ -1,4 +1,5 @@
 """started notify"""
+
 import json
 import os
 import smtplib
@@ -10,39 +11,45 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from http.client import HTTPSConnection
 from urllib import request
+import traceback
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     token = sys.argv[1]
-    user, repo = os.getenv('GITHUB_REPOSITORY').split('/')
+    user, repo = os.getenv("GITHUB_REPOSITORY").split("/")
 
-    conn = HTTPSConnection('api.github.com')
+    conn = HTTPSConnection("api.github.com")
     conn.request(
-        'POST',
-        '/graphql',
-        json.dumps({
-            'query': '{ repository(name: "' + repo + '", owner: "' + user +
-                     '") { stargazerCount stargazers(last: 1) { edges { node { name url avatarUrl email } } } } }'
-        }),
+        "POST",
+        "/graphql",
+        json.dumps(
+            {
+                "query": '{ repository(name: "'
+                + repo
+                + '", owner: "'
+                + user
+                + '") { stargazerCount stargazers(last: 1) { edges { node { name url avatarUrl email } } } } }'
+            }
+        ),
         {
-            'User-Agent': 'Python3',
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-        }
+            "User-Agent": "Python3",
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json",
+        },
     )
 
-    data = conn.getresponse().read().decode('utf8')
-    data = json.loads(data)['data']
+    data = conn.getresponse().read().decode("utf8")
+    data = json.loads(data)["data"]
 
-    sender = 'started_notify@163.com'
+    sender = "started_notify@163.com"
     receiver = sys.argv[2]
 
     msg_root = MIMEMultipart()
-    msg_root['From'] = formataddr(('started notify', sender))
-    msg_root['To'] = formataddr((receiver, receiver))
-    msg_root['Subject'] = f'[{user}/{repo}] started'
+    msg_root["From"] = formataddr(("started notify", sender))
+    msg_root["To"] = formataddr((receiver, receiver))
+    msg_root["Subject"] = f"[{user}/{repo}] started"
 
     try:
-        last_user = data['repository']['stargazers']['edges'][0]['node']
+        last_user = data["repository"]["stargazers"]["edges"][0]["node"]
         content = f"""
 <div style="text-align: center;">
     <h1>{data['repository']['stargazerCount']} 💕</h1>
@@ -52,32 +59,21 @@ if __name__ == '__main__':
 </div>
 """
 
-        msg_image = MIMEImage(request.urlopen(last_user['avatarUrl']).read(), 'png')
-        msg_image.add_header('Content-ID', '<avatar>')
+        msg_image = MIMEImage(request.urlopen(last_user["avatarUrl"]).read(), "png")
+        msg_image.add_header("Content-ID", "<avatar>")
 
         msg_root.attach(msg_image)
+
+        msg_root.attach(MIMEText(content, "html"))
+
+        smtp = smtplib.SMTP_SSL("smtp.163.com", 465)
+        smtp.login(sender, "QDCONGQTZIIZKBBI")
+        for i in range(1, 4):
+            try:
+                result = smtp.sendmail(sender, [receiver], msg_root.as_bytes())
+                break
+            except smtplib.SMTPServerDisconnected as e:
+                traceback.print_exception(e)
+                time.sleep(i * 3)
     except Exception as e:
-        print('Exception:', e)
-        content = f"""
-<div style="text-align: center;">
-    <h5>刚刚有个吊毛，给你标星，又取消了 💕</h5>
-    <h3>不知道是谁 😂</h3>
-    <h4>是不是你自己呀 🤣</h4>
-</div>
-"""
-
-    msg_root.attach(MIMEText(content, 'html'))
-
-    smtp = smtplib.SMTP_SSL('smtp.163.com', 465)
-    smtp.login(sender, 'QDCONGQTZIIZKBBI')
-    for i in range(1, 4):
-        try:
-            result = smtp.sendmail(
-                sender,
-                [receiver],
-                msg_root.as_bytes()
-            )
-            break
-        except smtplib.SMTPServerDisconnected as e:
-            print('Exception:', e)
-            time.sleep(i * 3)
+        traceback.print_exception(e)

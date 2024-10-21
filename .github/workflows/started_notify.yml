@@ -1,7 +1,7 @@
 name: Star Notify
 on:
   watch:
-    types: [started]
+    types: [ started ]
 jobs:
   Notify:
     runs-on: ubuntu-latest
